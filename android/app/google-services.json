@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "230871046341",
+    "project_id": "e-commerce-db515",
+    "storage_bucket": "e-commerce-db515.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:230871046341:android:cdb419572b413dc83bf8ac",
+        "android_client_info": {
+          "package_name": "com.chaos.ecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGD4t2As4mRoxIKsyjWUNNbitkvvW9Aks"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
