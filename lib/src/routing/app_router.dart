@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pro_ecommerce/src/features/cart/presenter/cart/cart_screen.dart';
 import 'package:pro_ecommerce/src/features/category/presenter/category_screen/category_screen.dart';
+import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen.dart';
 import 'package:pro_ecommerce/src/features/products/presentation/products_screen/products_screen.dart';
 import 'package:pro_ecommerce/src/features/products/presentation/product_details_screen/product_details_screen.dart';
 import 'package:pro_ecommerce/src/features/wishlist/presenter/wishlist_screen.dart';
@@ -23,6 +24,8 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _productsNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'products');
 //final _entriesNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'entries');
 final _cartNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'cart');
+//final _customerOrderNavigatorKey =
+//    GlobalKey<NavigatorState>(debugLabel: 'customerOrder');
 final _wishlistNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'wishlist');
 final _categoryNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'category');
 final _accountNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'account');
@@ -34,7 +37,7 @@ enum AppRoute {
   cart,
   wishlist,
   category,
-
+  customerOrder,
   // addJob,
   // editJob,
   // entry,
@@ -76,6 +79,7 @@ GoRouter goRouter(Ref ref) {
             path.startsWith('/products') ||
             path.startsWith('/wishlist') ||
             path.startsWith('/category') ||
+            path.startsWith('/customerOrder') ||
             path.startsWith('/cart') ||
             path.startsWith('/account')) {
           return '/signIn';
@@ -99,6 +103,29 @@ GoRouter goRouter(Ref ref) {
           child: CustomSignInScreen(),
         ),
       ),
+
+      GoRoute(
+        path: '/customerOrder',
+        name: AppRoute.customerOrder.name,
+        parentNavigatorKey:
+            _rootNavigatorKey, // Ensures it's pushed above the bottom nav
+        pageBuilder: (context, state) => NoTransitionPage(
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text("Customer Order"),
+              centerTitle: true,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  context.go('/products');
+                },
+              ),
+            ),
+            body: const CustomerOrderScreen(),
+          ),
+        ),
+      ),
+
       // Stateful navigation based on:
       // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
       StatefulShellRoute.indexedStack(

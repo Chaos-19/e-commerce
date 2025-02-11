@@ -23,7 +23,7 @@ class Strings {
   static const String ecommerce = 'e-commerce';
 
   // Entries page
-  static const String entries = 'Entries';
+  static const String customerOrder = 'Custome rOrder';
 
   static const String wishlist = 'Wishlist';
 
