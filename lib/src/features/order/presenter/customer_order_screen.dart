@@ -179,6 +179,8 @@ import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen
 import 'package:pro_ecommerce/src/features/products/data/products_repository.dart';
 import 'package:pro_ecommerce/src/routing/app_router.dart';
 
+import 'package:chapasdk/chapasdk.dart';
+
 class CustomerOrderScreen extends ConsumerStatefulWidget {
   const CustomerOrderScreen({super.key});
 
@@ -271,6 +273,30 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
     }
   }
 
+  void initiatePayment() {
+//'CHASECK_TEST-nfishiESuj9TlorDI8C9qedpY7kkTZpf'
+
+    final response = Chapa.paymentParameters(
+      context: context,
+      publicKey: 'CHAPUBK_TEST-OVDb3sfnaUCasSt4oBjYokYydzwvaahO',
+      currency: 'ETB',
+      amount: '1',
+      email: 'fetanchapa.co',
+      phone: '0911223344',
+      firstName: 'Israel',
+      lastName: 'Goytom',
+      txRef: 'txn_12345',
+      title: 'Order Payment',
+      desc: 'Payment for order #12345',
+      nativeCheckout: true,
+      namedRouteFallBack: '/',
+      showPaymentMethodsOnGridView: true,
+      availablePaymentMethods: ['mpesa', 'cbebirr', 'telebirr', 'ebirr'],
+    );
+
+    response.initiatePayment();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -292,6 +318,7 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
                 _submitOrder(context, ref);
               } else if (_currentStep == 2) {
                 //context.goNamed(AppRoute.payment.name);
+                initiatePayment();
               }
             },
             onStepCancel: () {
