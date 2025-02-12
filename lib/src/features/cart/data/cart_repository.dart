@@ -52,6 +52,15 @@ class CartRepository {
     await itemRef.delete();
   }
 
+  // Clear all items in the user's cart
+  Future<void> clearUserCart(String userId) async {
+    final cartItemsRef = _firestore.collection(cartPath(userId));
+    final cartItemsSnapshot = await cartItemsRef.get();
+    for (var doc in cartItemsSnapshot.docs) {
+      await doc.reference.delete();
+    }
+  }
+
   // Watch user's cart as a stream
   Stream<List<CartItem>> watchUserCart(String userId) {
     return _firestore
