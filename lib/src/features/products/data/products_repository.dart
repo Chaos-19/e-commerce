@@ -110,6 +110,17 @@ class ProductsRepository {
     final products = await queryProducts().get();
     return products.docs.map((doc) => doc.data()).toList();
   }
+
+  // Search by category
+  Future<List<Product>> searchProductsByCategory(String category) async {
+    final querySnapshot = await _firestore
+        .collection(productsPath())
+        .where('categories', arrayContains: category)
+        .get();
+    return querySnapshot.docs
+        .map((doc) => Product.fromMap(doc.data(), doc.id))
+        .toList();
+  }
 }
 
 @Riverpod(keepAlive: true)
