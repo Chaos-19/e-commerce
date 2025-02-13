@@ -344,7 +344,7 @@ class ProductCard extends ConsumerWidget {
                       Row(
                         children: [
                           Text(
-                            '\$${price.toStringAsFixed(2)}',
+                            '${price.toStringAsFixed(2)}ETB',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

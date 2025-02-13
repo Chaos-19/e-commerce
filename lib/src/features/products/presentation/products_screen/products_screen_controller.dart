@@ -15,14 +15,5 @@ class ProductScreenController extends _$ProductScreenController {
     // ok to leave this empty if the return type is FutureOr<void>
   }
 
-  Future<void> deleteJob(Product job) async {
-    final currentUser = ref.read(authRepositoryProvider).currentUser;
-    if (currentUser == null) {
-      throw AssertionError('User can\'t be null');
-    }
-    final repository = ref.read(productsRepositoryProvider);
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(
-        () => repository.deleteProduct(uid: currentUser.uid, productId: '',));
-  }
+
 }

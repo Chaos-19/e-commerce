@@ -124,67 +124,130 @@ class ProductScreen extends StatelessWidget {
     );
   }
 
+  // Widget _buildProductList(BuildContext context) {
+  //   return Consumer(
+  //     builder: (context, ref, child) {
+  //       ref.listen<AsyncValue>(
+  //         productScreenControllerProvider,
+  //         (_, state) => state.showAlertDialogOnError(context),
+  //       );
+  //       final productsQuery = ref.watch(productsQueryProvider);
+  //       return LayoutBuilder(
+  //         builder: (context, constraints) {
+  //           debugPrint('Parent constraints: $constraints');
+  //           return SizedBox(
+  //             height: constraints.maxHeight > 0 ? constraints.maxHeight : 300,
+  //             child: FirestoreQueryBuilder<Product>(
+  //               query: productsQuery,
+  //               builder: (context, snapshot, _) {
+  //                 if (snapshot.isFetching) {
+  //                   return const Center(child: CircularProgressIndicator());
+  //                 }
+
+  //                 if (snapshot.docs.isEmpty) {
+  //                   return const Center(child: Text('No products found'));
+  //                 }
+
+  //                 print("${snapshot.docs.length} products found");
+
+  //                 return GridView.builder(
+  //                   gridDelegate:
+  //                       const SliverGridDelegateWithFixedCrossAxisCount(
+  //                     crossAxisCount: 2, // Number of columns
+  //                     crossAxisSpacing: 8.0, // Space between columns
+  //                     mainAxisSpacing: 8.0, // Space between rows
+  //                     childAspectRatio: 0.75, // Aspect ratio of each item
+  //                   ),
+  //                   itemCount: snapshot.docs.length,
+  //                   itemBuilder: (context, index) {
+  //                     final doc = snapshot.docs[index];
+  //                     final product = doc.data();
+
+  //                     return ProductCard(
+  //                       productId: product.id,
+  //                       name: product.name,
+  //                       price: product.price,
+  //                       oldPrice: product.price,
+  //                       stock: product.stock,
+  //                       rating: product.stock.toDouble(),
+  //                       imageUrl: product.productImages.first.url,
+  //                       onTap: () {
+  //                         try {
+  //                           context.goNamed(
+  //                             AppRoute.productDetail.name,
+  //                             pathParameters: {'id': product.id},
+  //                           );
+  //                           print(product.name);
+  //                         } catch (e) {
+  //                           print(e.toString());
+  //                         }
+  //                       },
+  //                     );
+  //                   },
+  //                 );
+  //               },
+  //             ),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
+
   Widget _buildProductList(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        ref.listen<AsyncValue>(
-          productScreenControllerProvider,
-          (_, state) => state.showAlertDialogOnError(context),
-        );
         final productsQuery = ref.watch(productsQueryProvider);
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            debugPrint('Parent constraints: $constraints');
-            return SizedBox(
-              height: constraints.maxHeight > 0 ? constraints.maxHeight : 300,
-              child: FirestoreQueryBuilder<Product>(
-                query: productsQuery,
-                builder: (context, snapshot, _) {
-                  if (snapshot.isFetching) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
 
-                  if (snapshot.docs.isEmpty) {
-                    return const Center(child: Text('No products found'));
-                  }
+        return FirestoreQueryBuilder<Product>(
+          query: productsQuery,
+          builder: (context, snapshot, _) {
+            if (snapshot.isFetching && snapshot.docs.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Number of columns
-                      crossAxisSpacing: 8.0, // Space between columns
-                      mainAxisSpacing: 8.0, // Space between rows
-                      childAspectRatio: 0.75, // Aspect ratio of each item
-                    ),
-                    itemCount: snapshot.docs.length,
-                    itemBuilder: (context, index) {
-                      final doc = snapshot.docs[index];
-                      final product = doc.data();
+            if (snapshot.docs.isEmpty) {
+              return const Center(child: Text('No products found'));
+            }
 
-                      return ProductCard(
-                        productId:  product.id,
-                        name: product.name,
-                        price: product.price,
-                        oldPrice: product.price,
-                        stock: product.stock,
-                        rating: product.stock.toDouble(),
-                        imageUrl: product.productImages.first.url,
-                        onTap: () {
-                          try {
-                            context.goNamed(
-                              AppRoute.productDetail.name,
-                              pathParameters: {'id': product.id},
-                            );
-                            print(product.name);
-                          } catch (e) {
-                            print(e.toString());
-                          }
-                        },
-                      );
-                    },
-                  );
-                },
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Number of columns
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 0.75,
               ),
+              itemCount: snapshot.docs.length + (snapshot.hasMore ? 1 : 0),
+              itemBuilder: (context, index) {
+                // If the user scrolls to the last item, fetch more data
+                if (index == snapshot.docs.length) {
+                  snapshot.fetchMore(); // Fetch the next batch
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final doc = snapshot.docs[index];
+                final product = doc.data();
+
+                return ProductCard(
+                  productId: product.id,
+                  name: product.name,
+                  price: product.price,
+                  oldPrice: product.price,
+                  stock: product.stock,
+                  rating: product.stock.toDouble(),
+                  imageUrl: product.productImages.first.url,
+                  onTap: () {
+                    try {
+                      context.goNamed(
+                        AppRoute.productDetail.name,
+                        pathParameters: {'id': product.id},
+                      );
+                    } catch (e) {
+                      print(e.toString());
+                    }
+                  },
+                );
+              },
             );
           },
         );

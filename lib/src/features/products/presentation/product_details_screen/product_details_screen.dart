@@ -65,7 +65,7 @@ class ProductDetailScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              '\$${product.price.toStringAsFixed(2)}',
+              '${product.price.toStringAsFixed(2)} ETB',
               style: const TextStyle(fontSize: 20, color: Colors.orange),
             ),
             const SizedBox(height: 8),
@@ -88,7 +88,9 @@ class ProductDetailScreen extends ConsumerWidget {
 
                 final userId = user.uid;
                 try {
-                  await ref.read(cartScreenControllerProvider.notifier).addToCart(
+                  await ref
+                      .read(cartScreenControllerProvider.notifier)
+                      .addToCart(
                         userId: userId,
                         productId: product.id,
                         quantity: 1,
@@ -98,7 +100,8 @@ class ProductDetailScreen extends ConsumerWidget {
                   );
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Failed to add product to cart: $e')),
+                    SnackBar(
+                        content: Text('Failed to add product to cart: $e')),
                   );
                 }
 

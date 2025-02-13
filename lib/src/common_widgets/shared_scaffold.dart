@@ -29,8 +29,8 @@ class SharedScaffold extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () {},
-            // onPressed: () => context.goNamed(AppRoute.addJob.name),
+            //onPressed: () {},
+            onPressed: () => context.goNamed(AppRoute.searchProduct.name),
           ),
           Stack(
             children: [

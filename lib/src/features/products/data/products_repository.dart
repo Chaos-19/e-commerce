@@ -121,17 +121,54 @@ class ProductsRepository {
         .map((doc) => Product.fromMap(doc.data(), doc.id))
         .toList();
   }
+
+  // Search by name
+  // Future<List<Product>> searchProductsByName(String name) async {
+  //   final querySnapshot = await _firestore
+  //       .collection(productsPath())
+  //       .where('name', isGreaterThanOrEqualTo: name)
+  //       .where('name', isLessThanOrEqualTo: name + '\uf8ff')
+  //       .get();
+
+  //   print('\n\n\n Query Snapshot: $querySnapshot \n\n\n\n');
+
+  //   return querySnapshot.docs
+  //       .map((doc) => Product.fromMap(doc.data(), doc.id))
+  //       .toList();
+  // }
+
+  Future<List<Product>> searchProductsByName(String name) async {
+    final querySnapshot = await _firestore
+        .collection(productsPath())
+        .where('name', isEqualTo: name.toLowerCase())
+        .get();
+
+    return querySnapshot.docs
+        .map((doc) => Product.fromMap(doc.data(), doc.id))
+        .toList();
+  }
 }
 
 @Riverpod(keepAlive: true)
 ProductsRepository productsRepository(Ref ref) {
   return ProductsRepository(FirebaseFirestore.instance);
 }
-
+/*
 @riverpod
 Query<Product> productsQuery(Ref ref) {
   final repository = ref.watch(productsRepositoryProvider);
   return repository.queryProducts();
+  //.orderBy('createdAt', descending: true); // Ensure documents are ordered;
+}
+*/
+
+@riverpod
+Query<Product> productsQuery(Ref ref) {
+  final repository = ref.watch(productsRepositoryProvider);
+  return repository
+      .queryProducts()
+      //.orderBy('createdAt', descending: true) // Ensure documents are ordered
+      .limit(10); // Fetch 10 products at a time
 }
 
 @riverpod

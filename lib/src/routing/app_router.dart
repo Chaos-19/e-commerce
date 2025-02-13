@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pro_ecommerce/src/features/cart/presenter/cart/cart_screen.dart';
 import 'package:pro_ecommerce/src/features/category/presenter/category_screen/category_screen.dart';
 import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen.dart';
+import 'package:pro_ecommerce/src/features/products/presentation/product_search/product_search.dart';
 import 'package:pro_ecommerce/src/features/products/presentation/products_screen/products_screen.dart';
 import 'package:pro_ecommerce/src/features/products/presentation/product_details_screen/product_details_screen.dart';
 import 'package:pro_ecommerce/src/features/wishlist/presenter/wishlist_screen.dart';
@@ -38,6 +39,7 @@ enum AppRoute {
   wishlist,
   category,
   customerOrder,
+  searchProduct,
   // addJob,
   // editJob,
   // entry,
@@ -80,6 +82,7 @@ GoRouter goRouter(Ref ref) {
             path.startsWith('/wishlist') ||
             path.startsWith('/category') ||
             path.startsWith('/customerOrder') ||
+            path.startsWith('/searchProduct') ||
             path.startsWith('/cart') ||
             path.startsWith('/account')) {
           return '/signIn';
@@ -126,6 +129,14 @@ GoRouter goRouter(Ref ref) {
         ),
       ),
 
+      GoRoute(
+        path: '/searchProduct',
+        name: AppRoute.searchProduct.name,
+        parentNavigatorKey:
+            _rootNavigatorKey, // Ensures it's pushed above the bottom nav
+        pageBuilder: (context, state) =>
+            NoTransitionPage(child: ProductSearchScreen()),
+      ),
       // Stateful navigation based on:
       // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
       StatefulShellRoute.indexedStack(

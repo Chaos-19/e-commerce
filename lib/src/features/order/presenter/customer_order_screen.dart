@@ -56,6 +56,7 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
       final product =
           await ref.read(productsRepositoryProvider).getProduct(item.productId);
       total += item.quantity * product.price;
+      
       items.add(OrderItem(
         productId: item.productId,
         name: product.name,
