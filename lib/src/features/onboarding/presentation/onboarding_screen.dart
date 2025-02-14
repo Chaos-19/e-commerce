@@ -24,7 +24,7 @@ class OnboardingScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-                'Shop smart.\nSave big.',
+              'Shop smart.\nSave big.',
               style: Theme.of(context).textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
@@ -33,7 +33,7 @@ class OnboardingScreen extends ConsumerWidget {
               'assets/time-tracking.svg',
               width: 200,
               height: 200,
-              semanticsLabel: 'Time tracking logo',
+              semanticsLabel: 'Becho Gadget',
             ),
             gapH16,
             PrimaryButton(

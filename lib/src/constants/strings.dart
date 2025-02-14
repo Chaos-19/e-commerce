@@ -20,7 +20,7 @@ class Strings {
   static const String homePage = 'Home Page';
 
   // products page
-  static const String ecommerce = 'e-commerce';
+  static const String ecommerce = 'Becho Gadget';
 
   // Entries page
   static const String customerOrder = 'Custome rOrder';
