@@ -6,7 +6,7 @@ import 'package:pro_ecommerce/src/features/authentication/data/firebase_auth_rep
 import 'package:pro_ecommerce/src/features/cart/data/cart_repository.dart';
 import 'package:pro_ecommerce/src/features/order/data/customer_order_repository.dart';
 import 'package:pro_ecommerce/src/features/order/domain/customer_order.dart';
-import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen_controller.dart';
+import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen/customer_order_screen_controller.dart';
 import 'package:pro_ecommerce/src/features/products/data/products_repository.dart';
 import 'package:pro_ecommerce/src/routing/app_router.dart';
 
@@ -25,6 +25,7 @@ class CustomerOrderScreen extends ConsumerStatefulWidget {
 class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
   final _formKey = GlobalKey<FormState>();
   int _currentStep = 0;
+  String? _orderId;
 
   final TextEditingController _deliveryAddressController =
       TextEditingController();
@@ -36,10 +37,11 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
   double totalAmount = 0;
 
   @override
-  void dispose() {
+  void dispose() async {
     _deliveryAddressController.dispose();
     _recipientNameController.dispose();
     _phoneNumberController.dispose();
+
     super.dispose();
   }
 
@@ -56,7 +58,7 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
       final product =
           await ref.read(productsRepositoryProvider).getProduct(item.productId);
       total += item.quantity * product.price;
-      
+
       items.add(OrderItem(
         productId: item.productId,
         name: product.name,
@@ -88,7 +90,9 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
     }
 
     try {
-      await ref.read(customerOrderScreenControllerProvider.notifier).placeOrder(
+      _orderId = await ref
+          .read(customerOrderScreenControllerProvider.notifier)
+          .placeOrder(
             userId: user.uid,
             items: orderItems,
             totalAmount: totalAmount,
@@ -125,11 +129,22 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
       onInAppPaymentSuccess: (successMsg) async {
         // Clear the cart after placing the order
         String userId = ref.read(authRepositoryProvider).currentUser!.uid;
+
         await _clearCart(ref, userId);
+
         context.goNamed(AppRoute.cart.name);
       },
-      onInAppPaymentError: (errorMsg) {
+      onInAppPaymentError: (errorMsg) async {
         print('Error: $errorMsg');
+        if (_orderId != null) {
+          await ref
+              .read(customerOrderScreenControllerProvider.notifier)
+              .cancelOrder(_orderId!);
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Payment failed: $errorMsg')),
+        );
       },
       amount: '$amount',
       currency: 'ETB',
@@ -245,11 +260,11 @@ class _CustomerOrderScreenState extends ConsumerState<CustomerOrderScreen> {
                         subtitle: Text(
                             '${item.quantity} x \$${item.price.toStringAsFixed(2)}'),
                         trailing: Text(
-                            '\$${(item.quantity * item.price).toStringAsFixed(2)}'),
+                            '${(item.quantity * item.price).toStringAsFixed(2)}ETB'),
                       ),
                     const Divider(),
                     Text(
-                      'Total: \$${totalAmount.toStringAsFixed(2)}',
+                      'Total: ${totalAmount.toStringAsFixed(2)}ETB',
                       style: const TextStyle(
                           fontSize: 18, fontWeight: FontWeight.bold),
                     ),

@@ -28,7 +28,7 @@ class CustomerOrderRepository {
 
   // Delete
   Future<void> deleteOrder(String orderId) async {
-    await _firestore.collection(ordersPath()).doc(orderId).delete();
+    await _firestore.collection('orders').doc(orderId).delete();
   }
 
   // Get
@@ -57,20 +57,28 @@ class CustomerOrderRepository {
   // Watch: All Orders by User ID
   Stream<List<CustomerOrder>> watchOrders(String userId) {
     return _firestore
-        .collection(ordersPath())
+        .collection('orders')
         .where('userId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
+        //.orderBy('createdAt', descending: true)
         .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => CustomerOrder.fromMap(doc.data()!, doc.id))
-          .toList();
-    });
+        .map((snapshot) => snapshot.docs
+            .map((doc) => CustomerOrder.fromMap(doc.data(), doc.id))
+            .toList()
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt)));
   }
 
   Future<void> updateOrderStatus(String orderId, String status) async {
     await _firestore.collection(ordersPath()).doc(orderId).update({
       'status': status,
+    });
+  }
+
+   Future<void> updateProductStock(String productId, int quantityChange) async {
+    final productRef = _firestore.collection('products').doc(productId);
+    await _firestore.runTransaction((transaction) async {
+      final snapshot = await transaction.get(productRef);
+      final newStock = snapshot['stock'] + quantityChange;
+      transaction.update(productRef, {'stock': newStock});
     });
   }
 }
@@ -91,3 +99,9 @@ Stream<List<CustomerOrder>> customerOrdersStream(Ref ref, String userId) {
   final repository = ref.watch(customerOrderRepositoryProvider);
   return repository.watchOrders(userId);
 }
+
+final customerOrdersStreamProvider = StreamProvider.autoDispose
+    .family<List<CustomerOrder>, String>((ref, userId) {
+  final orderRepository = ref.watch(customerOrderRepositoryProvider);
+  return orderRepository.watchOrders(userId);
+});

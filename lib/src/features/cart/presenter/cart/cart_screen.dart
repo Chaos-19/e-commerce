@@ -7,7 +7,7 @@ import 'package:pro_ecommerce/src/features/cart/domain/cart_item.dart';
 import 'package:pro_ecommerce/src/features/cart/presenter/cart/cart_screen_controller.dart';
 import 'package:pro_ecommerce/src/features/authentication/data/firebase_auth_repository.dart';
 import 'package:pro_ecommerce/src/features/order/domain/customer_order.dart';
-import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen_controller.dart';
+import 'package:pro_ecommerce/src/features/order/presenter/customer_order_screen/customer_order_screen_controller.dart';
 import 'package:pro_ecommerce/src/routing/app_router.dart';
 import 'package:pro_ecommerce/src/utils/async_value_ui.dart';
 import 'package:pro_ecommerce/src/features/products/data/products_repository.dart';

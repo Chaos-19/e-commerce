@@ -99,12 +99,14 @@ class ProductsRepository {
       .snapshots()
       .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
-  Query<Product> queryProducts() =>
-      _firestore.collection(productsPath()).withConverter(
-            fromFirestore: (snapshot, _) =>
-                Product.fromMap(snapshot.data()!, snapshot.id),
-            toFirestore: (product, _) => product.toMap(),
-          );
+  Query<Product> queryProducts() => _firestore
+      .collection(productsPath())
+      .where('status', isEqualTo: 'approved')
+      .withConverter(
+        fromFirestore: (snapshot, _) =>
+            Product.fromMap(snapshot.data()!, snapshot.id),
+        toFirestore: (product, _) => product.toMap(),
+      );
 
   Future<List<Product>> fetchProducts() async {
     final products = await queryProducts().get();
@@ -116,6 +118,7 @@ class ProductsRepository {
     final querySnapshot = await _firestore
         .collection(productsPath())
         .where('categories', arrayContains: category)
+        .where('status', isEqualTo: 'approved')
         .get();
     return querySnapshot.docs
         .map((doc) => Product.fromMap(doc.data(), doc.id))
@@ -140,7 +143,10 @@ class ProductsRepository {
   Future<List<Product>> searchProductsByName(String name) async {
     final querySnapshot = await _firestore
         .collection(productsPath())
-        .where('name', isEqualTo: name.toLowerCase())
+        .where('name', isGreaterThanOrEqualTo: name.toLowerCase())
+        //.orderBy("name")
+        .where('name',
+            isLessThan: name.toLowerCase() + '\uf8ff') // Unicode trick
         .get();
 
     return querySnapshot.docs

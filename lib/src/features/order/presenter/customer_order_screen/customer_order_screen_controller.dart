@@ -15,7 +15,7 @@ class CustomerOrderScreenController extends _$CustomerOrderScreenController {
     _orderRepository = ref.read(customerOrderRepositoryProvider);
   }
 
-  Future<void> placeOrder({
+  Future<String> placeOrder({
     required String userId,
     required List<OrderItem> items,
     required double totalAmount,
@@ -35,7 +35,16 @@ class CustomerOrderScreenController extends _$CustomerOrderScreenController {
       phoneNumber: phoneNumber,
     );
 
+    print("CustomerOrder : ${order.id}");
+
+    // Update product stock size
+    for (var item in items) {
+      await _orderRepository.updateProductStock(item.productId, -item.quantity);
+    }
+
     await _orderRepository.addOrder(order);
+
+    return order.id;
   }
 
   /// Fetch the user's orders as a stream
@@ -57,6 +66,12 @@ class CustomerOrderScreenController extends _$CustomerOrderScreenController {
   /// Cancel an order
   Future<void> cancelOrder(String orderId) async {
     state = const AsyncLoading();
+    final order = await _orderRepository.getOrder(orderId);
+
+    // Update product stock size
+    for (var item in order.items) {
+      await _orderRepository.updateProductStock(item.productId, item.quantity);
+    }
     state = await AsyncValue.guard(() async {
       await _orderRepository.deleteOrder(orderId);
     });

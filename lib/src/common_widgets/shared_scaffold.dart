@@ -37,8 +37,8 @@ class SharedScaffold extends StatelessWidget {
               IconButton(
                 icon:
                     const Icon(Icons.notifications_active, color: Colors.white),
-                onPressed: () {},
-                //onPressed: () => context.goNamed(AppRoute.addJob.name),
+                //onPressed: () {},
+                onPressed: () => context.goNamed(AppRoute.orders.name),
               ),
               Positioned(
                 top: 0,

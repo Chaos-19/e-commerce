@@ -185,7 +185,7 @@ String _$customerOrdersStreamHash() =>
 
 /// See also [customerOrdersStream].
 @ProviderFor(customerOrdersStream)
-const customerOrdersStreamProvider = CustomerOrdersStreamFamily();
+const customerOrdersStreamFamilyProvider = CustomerOrdersStreamFamily();
 
 /// See also [customerOrdersStream].
 class CustomerOrdersStreamFamily

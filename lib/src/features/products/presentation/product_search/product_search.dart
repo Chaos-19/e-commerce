@@ -30,7 +30,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
       appBar: AppBar(
           title: const Text('Search Products'),
           leading: IconButton(
-            icon: const Icon(Icons.search, color: Colors.white),
+            icon:const Icon(Icons.arrow_back),
             //onPressed: () {},
             onPressed: () => context.goNamed(AppRoute.products.name),
           )),
