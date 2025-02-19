@@ -86,7 +86,7 @@ Contributions are welcome! Please read the CONTRIBUTING.md for guidelines on how
 - **Bereket Abdela** - [bekibekina@gmail.com](mailto:bekibekina@gmail.com)
 - **Gezahegn Welde** - [gzepa1234@gmail.com](mailto:gzepa1234@gmail.com)
 - **Dagmawi Belete** - [dagmbelete221@gmail.com](mailto:dagmbelete221@gmail.com)
-- **Eden Sisay**
+- **Eden Sisay** - [Edensisay118@gmail.com](mailto:Edensisay118@gmail.com) 
 
 ## License
 
